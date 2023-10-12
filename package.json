@@ -2,7 +2,7 @@
   "name": "hardhat-project",
   "scripts": {
     "compile": "./compile.sh",
-    "bench": "npx hardhat run ./bench/bench.ts"
+    "bench": "npx hardhat run ./bench/bench.ts --network local"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^3.0.0",

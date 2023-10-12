@@ -41,10 +41,8 @@ export async function deployContract(api: ApiPromise, deployer: KeyringPair, pat
 
     while (promise == undefined) {
         // need to wait for contract to deploy
-        console.log('waiting')
         await waitFor(1000);
     }
-    console.log('')
     return promise;
 }
 
@@ -55,9 +53,7 @@ export async function callContract(maxGas: Codec, deployer: KeyringPair, contrac
             }, args)
         .signAndSend(deployer, {nonce: -1}, result => {
             if (result.status.isInBlock) {
-                console.log('blockhash', result.status.asInBlock.toHuman())
-                console.log('txhash', result.txHash.toHuman())
-                console.log('weight', result.dispatchInfo?.weight.refTime.toHuman())
+                console.log(`weight of the ink! call "${fn}": ${result.dispatchInfo?.weight.refTime.toHuman()} Blockhash: ${result.status.asInBlock.toHuman()} -- txHash: ${result.txHash.toHuman()}`)
             }
         });
 }
