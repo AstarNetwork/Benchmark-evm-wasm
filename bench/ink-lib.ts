@@ -3,6 +3,7 @@ import {KeyringPair} from "@polkadot/keyring/types";
 import fs from "fs";
 import {Abi, CodePromise, ContractPromise} from "@polkadot/api-contract";
 import type { Codec } from '@polkadot/types-codec/types';
+import {formatNumberWithUnderscores} from "./helper";
 
 const ARITHMETIC_CONTRACT = `/../target/ink/arithmetic/arithmetic.contract`
 
@@ -46,14 +47,16 @@ export async function deployContract(api: ApiPromise, deployer: KeyringPair, pat
     return promise;
 }
 
-export async function callContract(maxGas: Codec, deployer: KeyringPair, contract: ContractPromise, fn: string, ...args) {
+export async function callContract(maxGas: Codec, deployer: KeyringPair, contract: ContractPromise, fn: string, info: string, ...args) {
     await contract.tx[fn](
             {
                 gasLimit: maxGas,
             }, args)
         .signAndSend(deployer, {nonce: -1}, result => {
             if (result.status.isInBlock) {
-                console.log(`weight of the ink! call "${fn}": ${result.dispatchInfo?.weight.refTime.toHuman()} Blockhash: ${result.status.asInBlock.toHuman()} -- txHash: ${result.txHash.toHuman()}`)
+                // to log blockHacsh & txHash:
+                // console.log(`${info} |  ${formatWithUnderscore(result.dispatchInfo?.weight.refTime.toString())} Blockhash: ${result.status.asInBlock.toHuman()} -- txHash: ${result.txHash.toHuman()}`)
+                console.log(`${info} | ref_time: ${formatNumberWithUnderscores(result.dispatchInfo?.weight.refTime.toNumber())} | proof_size: ${formatNumberWithUnderscores(result.dispatchInfo?.weight.proofSize.toNumber())}`)
             }
         });
 }
