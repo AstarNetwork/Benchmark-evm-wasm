@@ -1,18 +1,21 @@
-import {ApiPromise } from "@polkadot/api";
+import {ApiPromise} from "@polkadot/api";
 import {KeyringPair} from "@polkadot/keyring/types";
 import fs from "fs";
 import {Abi, CodePromise, ContractPromise} from "@polkadot/api-contract";
-import type { Codec } from '@polkadot/types-codec/types';
+import type {Codec} from '@polkadot/types-codec/types';
 import {formatNumberWithUnderscores} from "./helper";
 
 const ARITHMETIC_CONTRACT = `/../target/ink/arithmetic/arithmetic.contract`
+const POWER_CONTRACT = `/../target/ink/power/power.contract`
 
 export async function waitFor(ms: any) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
 export async function deployContracts(api: ApiPromise, deployer: KeyringPair) {
     const arithmeticContract: ContractPromise = await deployContract(api, deployer, ARITHMETIC_CONTRACT);
-    return arithmeticContract;
+    const powerContract: ContractPromise = await deployContract(api, deployer, POWER_CONTRACT);
+    return {arithmeticContract, powerContract};
 }
 
 export async function deployContract(api: ApiPromise, deployer: KeyringPair, path: string) {
@@ -47,11 +50,11 @@ export async function deployContract(api: ApiPromise, deployer: KeyringPair, pat
     return promise;
 }
 
-export async function callContract(maxGas: Codec, deployer: KeyringPair, contract: ContractPromise, fn: string, info: string, ...args) {
+export async function callContractAndLog(maxGas: Codec, deployer: KeyringPair, contract: ContractPromise, fn: string, info: string, ...args) {
     await contract.tx[fn](
-            {
-                gasLimit: maxGas,
-            }, args)
+        {
+            gasLimit: maxGas,
+        }, args)
         .signAndSend(deployer, {nonce: -1}, result => {
             if (result.status.isInBlock) {
                 // to log blockHacsh & txHash:

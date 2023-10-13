@@ -1,4 +1,5 @@
 [workspace]
 members = [
     "contracts/math/arithmetic/ink",
+    "contracts/math/power/ink",
 ]

@@ -1,5 +1,5 @@
 import {KeyringPair} from "@polkadot/keyring/types";
-import { ApiPromise } from "@polkadot/api";
+import {ApiPromise} from "@polkadot/api";
 import {ethers} from "hardhat";
 import * as polkadotCryptoUtils from "@polkadot/util-crypto";
 import {formatNumberWithUnderscores} from "./helper";
@@ -18,9 +18,13 @@ export async function getAlith(api: ApiPromise, deployer: KeyringPair) {
 export async function deploySolidityContracts() {
     const ArithmeticContractSol = await ethers.getContractFactory("Arithmetic");
     const arithmeticContractSol = await ArithmeticContractSol.deploy();
-
     const ArithmeticContractSolAddress = await arithmeticContractSol.getAddress()
-    return { arithmeticContractSol, ArithmeticContractSolAddress };
+
+    const PowerContractSol = await ethers.getContractFactory("Power");
+    const powerContractSol = await PowerContractSol.deploy();
+    const PowerContractSolAddress = await powerContractSol.getAddress()
+
+    return {arithmeticContractSol, ArithmeticContractSolAddress, powerContractSol, PowerContractSolAddress};
 }
 
 export async function LogTxWeight(api: ApiPromise, receipt, ArithmeticContractSolAddress: string, info: string) {
@@ -61,4 +65,10 @@ async function transferNative(api: ApiPromise, transfer_contract_account_id: any
                 unsub();
             }
         });
+}
+
+export async function LogTx(tx, api: ApiPromise, ArithmeticContractSolAddress: string, info: string) {
+    const receipt = await tx.wait();
+
+    await LogTxWeight(api, receipt, ArithmeticContractSolAddress, info);
 }
