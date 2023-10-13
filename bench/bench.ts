@@ -36,6 +36,9 @@ async function main(): Promise<void> {
         PowerContractSolAddress
     } = await deploySolidityContracts();
 
+    const tx0 = await arithmeticContractSol.connect(alith).performArithmetic(1, {gasLimit: 10000000});
+    await LogTx(tx0, api, ArithmeticContractSolAddress, 'EVM | Arithmetic |  performArithmetic(1) ');
+
     const tx1 = await arithmeticContractSol.connect(alith).performArithmetic(100, {gasLimit: 10000000});
     await LogTx(tx1, api, ArithmeticContractSolAddress, 'EVM | Arithmetic |  performArithmetic(100) ');
 

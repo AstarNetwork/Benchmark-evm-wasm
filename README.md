@@ -1,13 +1,14 @@
-# Sample Hardhat Project
+# WASM EVM Benchmarking
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
-
-Try running some of the following tasks:
-
+### 1. build contracts
 ```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+chmod +x ./compile.sh
+./compile.sh
+```
+
+### 2. run Benchmarks
+Ensure a node is running!
+```shell
+yarn
+yarn bench
 ```
