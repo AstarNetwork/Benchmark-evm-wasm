@@ -7,6 +7,8 @@ import {formatNumberWithUnderscores} from "./helper";
 
 const ARITHMETIC_CONTRACT = `/../target/ink/arithmetic/arithmetic.contract`
 const POWER_CONTRACT = `/../target/ink/power/power.contract`
+const PSP22_CONTRACT = `/../target/ink/my_psp22/my_psp22.contract`
+const CALLER_CONTRACT = `/../target/ink/caller/caller.contract`
 
 export async function waitFor(ms: any) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -15,7 +17,10 @@ export async function waitFor(ms: any) {
 export async function deployContracts(api: ApiPromise, deployer: KeyringPair) {
     const arithmeticContract: ContractPromise = await deployContract(api, deployer, ARITHMETIC_CONTRACT);
     const powerContract: ContractPromise = await deployContract(api, deployer, POWER_CONTRACT);
-    return {arithmeticContract, powerContract};
+    const psp22Contract: ContractPromise = await deployContract(api, deployer, PSP22_CONTRACT);
+    const callerContract: ContractPromise = await deployContract(api, deployer, CALLER_CONTRACT);
+
+    return {arithmeticContract, powerContract, psp22Contract, callerContract};
 }
 
 export async function deployContract(api: ApiPromise, deployer: KeyringPair, path: string) {
@@ -45,21 +50,31 @@ export async function deployContract(api: ApiPromise, deployer: KeyringPair, pat
 
     while (promise == undefined) {
         // need to wait for contract to deploy
-        await waitFor(1000);
+        await waitFor(1);
     }
     return promise;
 }
 
-export async function callContractAndLog(maxGas: Codec, deployer: KeyringPair, contract: ContractPromise, fn: string, info: string, ...args) {
+export async function callContractAndLog(maxGas: Codec, deployer: KeyringPair, contract: ContractPromise, fn: string, info: string, ...args: any[]) {
     await contract.tx[fn](
         {
             gasLimit: maxGas,
-        }, args)
+        }, ...args)
         .signAndSend(deployer, {nonce: -1}, result => {
             if (result.status.isInBlock) {
                 // to log blockHacsh & txHash:
                 // console.log(`${info} |  ${formatWithUnderscore(result.dispatchInfo?.weight.refTime.toString())} Blockhash: ${result.status.asInBlock.toHuman()} -- txHash: ${result.txHash.toHuman()}`)
                 console.log(`${info} | ref_time: ${formatNumberWithUnderscores(result.dispatchInfo?.weight.refTime.toNumber())} | proof_size: ${formatNumberWithUnderscores(result.dispatchInfo?.weight.proofSize.toNumber())}`)
             }
+        });
+}
+
+export async function callContractNoLog(maxGas: Codec, deployer: KeyringPair, contract: ContractPromise, fn: string, info: string, ...args: any[]) {
+    await contract.tx[fn](
+        {
+            gasLimit: maxGas,
+        }, ...args)
+        .signAndSend(deployer, {nonce: -1}, result => {
+            if (result.status.isInBlock) {}
         });
 }

@@ -24,7 +24,15 @@ export async function deploySolidityContracts() {
     const powerContractSol = await PowerContractSol.deploy();
     const PowerContractSolAddress = await powerContractSol.getAddress()
 
-    return {arithmeticContractSol, ArithmeticContractSolAddress, powerContractSol, PowerContractSolAddress};
+    const Erc20ContractSol = await ethers.getContractFactory("Token");
+    const erc20ContractSol = await Erc20ContractSol.deploy();
+    const Erc20ContractSolAddress = await erc20ContractSol.getAddress()
+
+    const CallerContractSol = await ethers.getContractFactory("Caller");
+    const callerContractSol = await CallerContractSol.deploy();
+    const CallerContractSolAddress = await callerContractSol.getAddress()
+
+    return {arithmeticContractSol, ArithmeticContractSolAddress, powerContractSol, PowerContractSolAddress, erc20ContractSol, Erc20ContractSolAddress, callerContractSol, CallerContractSolAddress   };
 }
 
 export async function LogTxWeight(api: ApiPromise, receipt, ArithmeticContractSolAddress: string, info: string) {

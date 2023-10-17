@@ -2,4 +2,6 @@
 members = [
     "contracts/math/arithmetic/ink",
     "contracts/math/power/ink",
+    "contracts/cross-contracts-call/ink/PSP22",
+    "contracts/cross-contracts-call/ink/caller",
 ]
