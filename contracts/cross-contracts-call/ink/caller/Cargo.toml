@@ -11,8 +11,6 @@ ink = { version = "4.3.0", default-features = false}
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
 scale-info = { version = "2.6", default-features = false, features = ["derive"], optional = true }
 
-openbrush = {  git = "https://github.com/Brushfam/openbrush-contracts", tag = "4.0.0", default-features = false, features = ["psp22"] }
-
 [lib]
 name = "caller"
 path = "lib.rs"
@@ -23,8 +21,6 @@ default = ["std"]
 std = [
     "ink/std",
     "scale/std",
-    "scale-info/std",
-    # These dependencies
-    "openbrush/std",
+    "scale-info/std"
 ]
 ink-as-dependency = []

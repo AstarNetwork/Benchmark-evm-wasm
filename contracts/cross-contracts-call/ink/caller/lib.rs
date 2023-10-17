@@ -1,10 +1,7 @@
 #![cfg_attr(not(feature = "std"), no_std, no_main)]
 
-#[openbrush::contract]
+#[ink::contract]
 pub mod my_psp22 {
-    use openbrush::{
-        contracts::psp22::extensions::wrapper::*,
-    };
     use ink::{
         env::{
             call::{
